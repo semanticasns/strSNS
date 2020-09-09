@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html onload="setcounter">
+<meta charset="UTF-8">
+<head>
+
+<script>
+var colum=0; // columna por la que se filtrará
+var valor; // value del botón que se ha pulsado
+var filas = t.getElementsByTagName('tr');
+var nTtotalRows = 0;
+var nFilteredRows = 0;
+function selecciona(obj,num) {
+  t = document.getElementById('tab');
+  filas = t.getElementsByTagName('tr');
+  // Deseleccionar columna anterior
+  for (i=1; ele=filas[i]; i++) 
+    ele.getElementsByTagName('td')[colum].className='';
+  // Seleccionar columna actual
+  colum=num;
+ for (i=1; ele=filas[i]; i++)
+    ele.getElementsByTagName('td')[colum].className='celdasel';
+ // Cambiar botón por cuadro de texto
+ valor = obj.value;
+  celda = obj.parentNode;
+  celda.removeChild(obj);
+  txt = document.createElement('input');
+  // alert(num);
+ // modificar de acuerdo a la estructura de la tabla
+  if (num==0) { txt.size = '45'; } 
+  if (num==1) { txt.size = '10'; } 
+ if (num==2) { txt.size = '7'; } 
+  if (num==3) { txt.size = '7'; } 
+  if (num==4) { txt.size = '7'; } 
+  if (num==5) { txt.size = '7'; } 
+  if (num==6) { txt.size = '7'; } 
+  if (num==7) { txt.size = '7'; } 
+  if (num==8) { txt.size = '3'; } 
+ celda.appendChild(txt);
+ txt.onblur = function() {
+  ponerBoton(this,num);
+  updateCounter();
+  };
+  txt.onkeyup = function() {filtra(this.value)};
+  // alert("Se han filtrado "+nFilteredRows+" triadas");
+ txt.focus();
+  // Desactivar los demás botones
+  for (i=0; ele=t.getElementsByTagName('input')[i]; i++)
+    if (ele.type == 'button') ele.disabled=true;
+}
+function ponerBoton(obj,num) { 
+  celda = obj.parentNode; 
+ celda.removeChild(obj); 
+  boton = document.createElement('input'); 
+  boton.type = 'button'; 
+  boton.value = valor; 
+  boton.onclick = function() {selecciona(this,num)} 
+  boton.onkeypress = function() {selecciona(this,num)} 
+  celda.appendChild(boton); 
+  // Activar botones 
+  for (i=0; ele=t.getElementsByTagName('input')[i]; i++) 
+    ele.disabled=false; 
+} 
+function filtra(txt) { 
+  var t = document.getElementById('tab'); 
+  var filas = t.getElementsByTagName('tr'); 
+  var pattern = new RegExp(txt.replace(/ /g,'.*'),'i') ; 
+  var filteredRows = 0; 
+ for (i=1; ele=filas[i]; i++) { 
+    texto = ele.getElementsByTagName('td')[colum].innerHTML.toUpperCase(); 
+    for (j=0; ra=document.forms[0].rad[j]; j++) // Comprobar radio seleccionado 
+     if (ra.checked) num = j; 
+    if (num==1) posi = (texto.indexOf(txt.toUpperCase()) == 0); // comienza con 
+    else if (num==2) posi = (texto.lastIndexOf(txt.toUpperCase()) == texto.length-txt.length); // termina en 
+    else if (num==3) posi = (texto.toUpperCase() == txt || texto.indexOf('>'+txt.toUpperCase()+'<') != -1); // igual a 
+    else if (num==4) posi = (pattern.test(texto) == true); // expresión regular encuentra pattern de txt en text del contenido 
+    else if (num==0) posi = (texto.indexOf(txt.toUpperCase()) != -1); // contiene  
+	filteredRows = (posi) ? filteredRows+1 : filteredRows; 
+    ele.style.display = (posi) ? '' : 'none';  
+	if (ele.style.display!='none') filteredRows++ ; 
+ }  
+} 
+function seleccionaGlosario(obj,num) {
+  t = document.getElementById('tabGlosario');
+  filas = t.getElementsByTagName('tr');
+  // Deseleccionar columna anterior
+  for (i=1; ele=filas[i]; i++) 
+    ele.getElementsByTagName('td')[colum].className='';
+  // Seleccionar columna actual
+  colum=num;
+  for (i=1; ele=filas[i]; i++)
+   ele.getElementsByTagName('td')[colum].className='celdasel';
+ // Cambiar botón por cuadro de texto
+ valor = obj.value;
+  celda = obj.parentNode;
+  txt = document.createElement('input');
+  // alert(num);
+ // modificar de acuerdo a la estructura de la tabla
+  if (num==0) { txt.size = '45'; } 
+  if (num==1) { txt.size = '10'; } 
+ if (num==2) { txt.size = '7'; } 
+  if (num==3) { txt.size = '7'; } 
+  if (num==4) { txt.size = '7'; } 
+  if (num==5) { txt.size = '7'; } 
+  if (num==6) { txt.size = '7'; } 
+  if (num==7) { txt.size = '7'; } 
+  if (num==8) { txt.size = '3'; } 
+  celda.appendChild(txt);
+  txt.onblur = function() {
+  ponerBotonGlosario(this,num);
+  updateCounterGlosario();
+  };
+ txt.onkeyup = function() {filtraGlosario(this.value)};
+ // alert('Se han filtrado '+nFilteredRows+' triadas');
+  txt.focus();
+ // Desactivar los demás botones
+  for (i=0; ele=t.getElementsByTagName('input')[i]; i++)
+    if (ele.type == 'button') ele.disabled=true;
+}
+function ponerBotonGlosario(obj,num) {
+  celda = obj.parentNode;
+ celda.removeChild(obj);
+ boton = document.createElement('input');
+  boton.type = 'button';
+  boton.value = valor;
+  boton.onclick = function() {filtraGlosario(this,num)}
+  boton.onkeypress = function() {filtraGlosario(this,num)}
+  celda.appendChild(boton);
+  // Activar botones
+  for (i=0; ele=t.getElementsByTagName('input')[i]; i++)
+    ele.disabled=false;
+}
+function filtraGlosario(txt) {
+  var t = document.getElementById('tabGlosario');
+  var filas = t.getElementsByTagName('tr');
+  // var filteredRows = 0;
+  for (i=1; ele=filas[i]; i++) {
+    texto = ele.getElementsByTagName('td')[colum].innerHTML.toUpperCase();
+   for (j=0; ra=document.forms[0].rad[j]; j++) // Comprobar radio seleccionado
+      if (ra.checked) num = j;
+    if (num==1) posi = (texto.indexOf(txt.toUpperCase()) == 0); // comienza con
+    else if (num==2) posi = (texto.lastIndexOf(txt.toUpperCase()) == texto.length-txt.length); // termina en
+    else if (num==3) posi = (texto.toUpperCase() == txt || texto.indexOf('>'+txt.toUpperCase()+'<') != -1); // igual a
+    else posi = (texto.indexOf(txt.toUpperCase()) != -1); // contiene
+	// filteredRows = (posi) ? filteredRows+1 : filteredRows;
+    ele.style.display = (posi) ? '' : 'none'; 
+	if (ele.style.display!='none') nFilteredRowsGlosario++ ;
+  } 
+}
+function setCounter() { 
+var t = document.getElementById('tab'); 
+var filas = t.getElementsByTagName('tr'); 
+// var totalRows = 0; 
+for (i=1; ele=filas[i]; i++) { totalRows = i; } 
+// alert('Se han cargado ' + totalRows + ' triadas.'); 
+document.getElementById('totalRows').value = totalRows; 
+document.getElementById('filteredRows').value = totalRows; 
+} 
+function updateCounter() { 
+nFilteredRows = 0; 
+var t = document.getElementById('tab'); 
+var filas = t.getElementsByTagName('tr'); 
+// var totalRows = 0; 
+for (i=1; ele=filas[i]; i++) {  
+	if (ele.style.display != 'none') nFilteredRows++ ; 
+} 
+document.getElementById('filteredRows').value = nFilteredRows; 
+} 
+function setCounterGlosario() {
+var nTotalRowsGlosario = 0;
+var t = document.getElementById('tabGlosario');
+var filas = t.getElementsByTagName('tr');
+// var totalRows = 0;
+for (i=1; ele=filas[i]; i++) { nTotalRowsGlosario = i; }
+// alert('Se han cargado ' + totalRows + ' triadas.');
+document.getElementById('totalRowsGlosario').value = nTotalRowsGlosario;
+document.getElementById('filteredRowsGlosario').value = nTotalRowsGlosario;
+}
+function updateCounterGlosario() {
+var nFilteredRowsGlosario = 0;
+var t = document.getElementById('tabGlosario');
+var filas = t.getElementsByTagName('tr');
+// var totalRows = 0;
+for (i=1; ele=filas[i]; i++) { 
+	if (ele.style.display != 'none') nFilteredRowsGlosario++ ;
+}
+document.getElementById('filteredRowsGlosario').value = nFilteredRowsGlosario;
+}
+function sincroniza(ngroup) { 
+// parent.frames[2].location='DHCGruposArbol.htm'+'#'+group; 
+alert('Estoy sincronizando con '+'DHCGruposArbol.htm'+'#'+ngroup);	 
+} 
+</script> 
+<style type='text/css'> 
+input[type=button], input[type=reset] { font-family:Calibri; background-color: #5351f6;  border: none;  color: white;  padding: 4px 8px;  text-decoration: none;  margin: 1px 1px;  cursor: pointer;}input[type=submit] { font-family:Calibri; background-color: #FEFECF;  border: none;  color: black;  padding: 2px 4px;  text-decoration: none;  margin: 1px 1px;  cursor: pointer;}body {font-family:Calibri; font-size:11pt; } 
+table tr th {font-family:Calibri; font-size:11pt; text-align:left; background-color:#EEEEDD; padding-left:1px; } 
+table tr td {font-family:Calibri; font-size:11pt; text-align:left; vertical-align: top; padding-left:3px; cursor:pointer; } 
+table tr td {border-bottom:1px dotted lightgray; } 
+pre {font-family:Calibri; font-size:11pt; text-align:left; vertical-align: top; padding-left:3px; cursor:pointer; } 
+input.number {text-align: right;} 
+.descriptor {font-weight:bold; background-color:#EFEFEF;} 
+.alternative {font-style: italic;} 
+.help {color:#111CF8; cursor:pointer;} 
+</style> 
+</head> 
+<body onload='setCounter()'> 
+<form class='formu' action=''> 
+<!-- Título principal -----------------------------------------------------------------------------> 
+<big><big><big>Visor de Conjuntos de Referencias de la Extensión de Medicamentos para España de SNOMED CT</big></big></big><br/> 
+<hr/> 
+<!-- Producto -------------------------------------------------------------------------------------> 
+&copy; Ministerio de Sanidad - Centro Nacional de Referencia de SNOMED CT para España. Versión del Visor: 26/07/2020.   (Requiere Google Chrome ™). <!-- Ayuda ----------------------------------------------------------------------------------------> 
+<hr/> 
+<details class='help'><summary>Ayuda</summary> 
+<ul> 
+<li><strong>Contenido:</strong> 
+<ul> 
+<li>El Visor de Conjunto de Referencias de las Extensiones para España se presenta como una tabla con buscadores para cada columna.</li> 
+<li>Cada fila contiene un Refset de las Extensiones para España.</li> 
+</ul></li> 
+<li><strong>Tabla de Contenidos:</strong> 
+<ul><li>La Tabla de Contenidos puede filtrar el contenido de la tabla pulsando sobre los botones de las cabeceras de columna.  
+<li>La columna Conjunto de referencias contiene la descripción del Refset.
+<li>La columna Identificador actua como enlace para visualizar un visor web del Conjunto de Referencias.</li>
+</ul></li> <br><li>Criterios de búsqueda: puede modificar la modalidad de búsqueda utilizando las opciones del menú 'Buscar:'. 
+<li>Marcando la opción 'Expresión' puede realizar búsquedas utilizando varias partículas de palabra.
+</details><hr/> 
+<!-- Modalidad ------------------------------------------------------------------------------------------------> 
+Buscar: <input type='button' value='Todos' onclick='window.location.reload()'> ... Filtrar:  
+<label for='fil1'><input type='radio' name='rad' id='fil1' />Contiene ...</label> 
+<label for='fil2'><input type='radio' name='rad' id='fil2' />Comienza con ...</label> 
+<label for='fil3'><input type='radio' name='rad' id='fil3' />Termina con ...</label> 
+<label for='fil4'><input type='radio' name='rad' id='fil4' />Igual a ...</label> <label for='fil5'><input type='radio' name='rad' id='fil5' checked='checked' >Expresión ...</label> <!-- Contadores ------------------------------------------------------------------------------------------------------> 
+ |   Seleccionados <input id='filteredRows' type='text' size='6' class='number' readonly='readonly'> elementos  
+de <input id='totalRows' type='text' size='6' class='number'  readonly='readonly'>.
+<hr /><br> 
+<!-- Apartado -----------------------------------------------------------------------------------> 
+<!-- Cabecera -------------------------------------------------------------------------------------> 
+<a name='Top'></a> 
+<table width='100%' class='tabla' id='tab'> 
+<tr class='encabezado'> 
+<th width='10%'><input type='button' title='' value='Identificador' onclick='selecciona(this,0)' onkeypress='selecciona(this,0)' /></th> 
+<th width='80%'><input type='button' title='' value='Conjunto de referencias' onclick='selecciona(this,1)' onkeypress='selecciona(this,1)' /></th> 
+</tr> 
+<!-- Datos ------------------------------------------------------------------------------> 
+<form action = ''></form><tr style='background-color:#f6e051'><td colspan='2'> Conjuntos de Referencia Extensión para España de Medicamentos</td><td></td></tr><tr><td><form action='https://webs.somsns.es/cnr/Visor_VTM.htm' method='POST' target='_blank'><input type='submit' value='110' name='consulta'>  </form></td><td> VTM-DCSA</td></tr><tr><td><form action='https://webs.somsns.es/cnr/Visor_VMP.htm' method='POST'target='_blank' ><input type='submit' value='111' name='consulta'>  </form></td><td> VMP-DCP</td></tr><tr><td><form action='https://webs.somsns.es/cnr/Visor_VMPP.htm' method='POST' target='_blank' ><input type='submit' value='112' name='consulta'></form></td><td> VMPP-DCPF</td></tr><tr><td><form action='https://webs.somsns.es/cnr/Visor_mapCNVMPP.htm' method='POST' target='_blank'><input type='submit' value='113' name='consulta'></form></td><td> Mapeo de Código Nacional de Medicamento a VMPP-DCPF</td></tr><tr><td><form action='https://webs.somsns.es/cnr/Visor_VTM-VMP-VMPP.htm' method='POST' target='_blank'><input type='submit' value='114' name='consulta'></form></td><td> Relación VTM-VMP-VMPP</td></tr><tr><td><form action='https://webs.somsns.es/cnr/Visor_FM.htm' method='POST' target='_blank'><input type='submit' value='116' name='consulta'></form></td><td> Fórmulas Magistrales (sin formato)</td></tr><tr><td><form action='https://webs.somsns.es/cnr/Visor_FMF.htm' method='POST' target='_blank'><input type='submit' value='117' name='consulta'></form></td><td> Fórmulas Magistrales (con formato)</td></tr><tr style='background-color:#f6e051'><td colspan='2'> Otros Visores</td><td></td></tr><tr><td><form action='https://webs.somsns.es/cnr/Visor_OSC.htm' method='POST' target='_blank'><input type='submit' value='115' name='consulta'></form></td><td> Ontología de Seguridad Clínica de Medicamentos</td></tr></table> 
+</form> 
+<hr /> 
+Fin del documento. 
+</body> 
+</html> 
