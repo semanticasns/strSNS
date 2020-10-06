@@ -3,6 +3,8 @@ session_start(); $_SESSION['path_include'] = "Access";
 include $_SESSION['path_include']."/configbd_gex_msqli.php"; 
 $busca = $_POST['consulta'] ;
 
+// Prueba de cambio en Github
+
 $sql01 = "select nombretabla, contenido, ordenado, mapeo, componente, nombretablasnapshot, visor from scibasetablas where visor = ".$busca." " ;
 $res01 = mysqli_query($conn,$sql01) or die ("Error: " . mysqli_error()); 
 while ($rg1 = mysqli_fetch_array($res01)) :	
